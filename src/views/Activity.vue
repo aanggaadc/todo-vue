@@ -1,5 +1,12 @@
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref } from "vue";
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  ref,
+  watch,
+  nextTick,
+} from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { ActivityState } from "@/store/module/activity";
@@ -20,15 +27,43 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore<ActivityState>();
     const param = route.params.id;
+    const inputRef = ref<HTMLInputElement | null>(null);
     const editMode = ref(false);
     const activity = computed(() => store.getters.activity);
     const isLoading = computed(() => store.getters.loadingActivity);
 
+    const handleUpdateActivity = async () => {
+      if (
+        inputRef.value?.value === activity.value.title ||
+        !inputRef.value?.value
+      ) {
+        editMode.value = false;
+        return;
+      } else {
+        await store.dispatch("updateActivity", {
+          id: param,
+          title: inputRef.value?.value,
+        });
+        editMode.value = false;
+      }
+    };
+
     onMounted(() => {
-      store.dispatch("fetchActivity", param);
+      store.dispatch("getActivity", param);
     });
 
-    return { activity, isLoading, editMode };
+    watch(
+      () => editMode.value,
+      (newValue) => {
+        if (newValue) {
+          nextTick(() => {
+            inputRef.value?.focus();
+          });
+        }
+      }
+    );
+
+    return { activity, isLoading, editMode, handleUpdateActivity, inputRef };
   },
 });
 </script>
@@ -55,21 +90,26 @@ export default defineComponent({
         ]"
       >
         <input
+          ref="inputRef"
           v-if="editMode"
-          ref="{inputRef}"
           className="font-bold text-lg md:text-3xl w-[80%] focus:border-none focus:outline-none"
           :value="activity.title"
+          @blur="handleUpdateActivity"
         />
 
         <h2
           v-else
           data-cy="todo-title"
           className="font-bold text-lg md:text-3xl"
+          @click="() => (editMode = !editMode)"
         >
           {{ activity.title }}
         </h2>
 
-        <button data-cy="todo-title-edit-button">
+        <button
+          :onClick="() => (editMode = !editMode)"
+          data-cy="todo-title-edit-button"
+        >
           <PencilIcon />
         </button>
       </div>

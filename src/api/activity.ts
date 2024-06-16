@@ -35,7 +35,7 @@ export const updateActivity = async (params: {
 }): Promise<Activity> => {
   const { id, ...payload } = params;
   const response = await fetcher<Activity>(`activity-groups/${id}`, payload, {
-    method: "PUT",
+    method: "PATCH",
   });
 
   return response;

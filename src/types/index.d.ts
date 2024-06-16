@@ -5,6 +5,7 @@ interface Activity {
   email: string;
   id: number;
   title: string;
+  todo_items: Todo[];
 }
 
 interface Todo {

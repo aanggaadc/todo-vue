@@ -39,7 +39,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      store.dispatch("fetchActivities");
+      store.dispatch("getActivities");
     });
 
     return { activities, isLoading, openModal, createActivity, onDeleteClick };
