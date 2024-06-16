@@ -1,7 +1,8 @@
-<script>
-import { cn } from "../../lib/utils";
+<script lang="ts">
+import { defineComponent } from "vue";
+import { cn } from "../lib/utils";
 
-export default {
+export default defineComponent({
   name: "LeftArrowIcon",
   props: {
     className: {
@@ -12,7 +13,7 @@ export default {
   methods: {
     cn,
   },
-};
+});
 </script>
 
 <template>
