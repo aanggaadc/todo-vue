@@ -27,7 +27,7 @@ export default defineComponent({
 
     const deleteActivity = async (id: number) => {
       try {
-        await store.dispatch("deleteActivityAction", id);
+        await store.dispatch("deleteActivity", id);
         props.onClose();
       } catch (error) {
         console.error("Failed to delete activity:", error);

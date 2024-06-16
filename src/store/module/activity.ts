@@ -1,7 +1,12 @@
 import { Activity } from "@/types";
 import { ActionContext } from "vuex";
 import { RootState } from "..";
-import { getActivities, getActivity, deleteActivity } from "@/api/activity";
+import {
+  getActivities,
+  getActivity,
+  createActivity as createActivityApi,
+  deleteActivity as deleteActivityApi,
+} from "@/api/activity";
 
 export interface ActivityState {
   activities: Activity[];
@@ -53,12 +58,23 @@ const actions = {
       commit("setLoadingActivity", false);
     }
   },
-  async deleteActivityAction(
+  async createActivity(
+    { commit }: ActionContext<ActivityState, RootState>,
+    params: { email: string; title: string }
+  ) {
+    try {
+      const newActivity = await createActivityApi(params);
+      commit("addActivity", newActivity);
+    } catch (error) {
+      console.error("Failed to create activity:", error);
+    }
+  },
+  async deleteActivity(
     { commit }: ActionContext<ActivityState, RootState>,
     id: number
   ) {
     try {
-      await deleteActivity(id);
+      await deleteActivityApi(id);
       commit("filterActivity", id);
     } catch (error) {
       console.error("Failed to delete activity:", error);
@@ -78,6 +94,9 @@ const mutations = {
   },
   setActivity(state: ActivityState, activity: Activity) {
     state.activity = activity;
+  },
+  addActivity(state: ActivityState, activity: Activity) {
+    state.activities = [activity, ...state.activities];
   },
   setSelectedActivity(state: ActivityState, activity: Activity) {
     state.selectedActivity = activity;

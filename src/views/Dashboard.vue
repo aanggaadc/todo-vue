@@ -26,6 +26,13 @@ export default defineComponent({
     const activities = computed(() => store.getters.activities);
     const isLoading = computed(() => store.getters.loadingActivities);
 
+    const createActivity = () => {
+      store.dispatch("createActivity", {
+        title: "New Activity",
+        email: "aanggaadc@gmail.com",
+      });
+    };
+
     const onDeleteClick = (data: Activity | Todo) => {
       store.dispatch("selectActivity", data);
       openModal.value = true;
@@ -35,7 +42,7 @@ export default defineComponent({
       store.dispatch("fetchActivities");
     });
 
-    return { activities, isLoading, openModal, onDeleteClick };
+    return { activities, isLoading, openModal, createActivity, onDeleteClick };
   },
 });
 </script>
@@ -55,6 +62,7 @@ export default defineComponent({
       </h2>
 
       <button
+        :onClick="createActivity"
         data-cy="activity-add-button"
         class="font-poppins text-xs font-semibold text-white rounded-3xl p-3 bg-primary flex items-center gap-1 md:text-sm md:px-6"
       >
