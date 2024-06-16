@@ -1,6 +1,7 @@
 import { Activity } from "@/types";
-import { Commit } from "vuex";
-import { getActivities, getActivity } from "@/api/activity";
+import { ActionContext } from "vuex";
+import { RootState } from "..";
+import { getActivities, getActivity, deleteActivity } from "@/api/activity";
 
 export interface ActivityState {
   activities: Activity[];
@@ -13,8 +14,8 @@ export interface ActivityState {
 const state: ActivityState = {
   activities: [],
   activity: null,
-  loadingActivities: true,
-  loadingActivity: true,
+  loadingActivities: false,
+  loadingActivity: false,
   selectedActivity: null,
 };
 
@@ -27,31 +28,70 @@ const getters = {
 };
 
 const actions = {
-  fetchActivities: async ({ commit }: { commit: Commit }) => {
-    state.loadingActivities = true;
-    const activities = await getActivities({ email: "aanggaadc@gmail.com" });
-    commit("setActivities", activities);
-    state.loadingActivities = false;
+  async fetchActivities({ commit }: ActionContext<ActivityState, RootState>) {
+    commit("setLoadingActivities", true);
+    try {
+      const activities = await getActivities({ email: "aanggaadc@gmail.com" });
+      commit("setActivities", activities);
+    } catch (error) {
+      console.error("Failed to fetch activities:", error);
+    } finally {
+      commit("setLoadingActivities", false);
+    }
   },
-  fetchActivity: async ({ commit }: { commit: Commit }, id: number) => {
-    state.loadingActivity = true;
-    const activity = await getActivity(id);
-    commit("setActivity", activity);
-    state.loadingActivity = false;
+  async fetchActivity(
+    { commit }: ActionContext<ActivityState, RootState>,
+    id: number
+  ) {
+    commit("setLoadingActivity", true);
+    try {
+      const activity = await getActivity(id);
+      commit("setActivity", activity);
+    } catch (error) {
+      console.error("Failed to fetch activity:", error);
+    } finally {
+      commit("setLoadingActivity", false);
+    }
+  },
+  async deleteActivityAction(
+    { commit }: ActionContext<ActivityState, RootState>,
+    id: number
+  ) {
+    try {
+      await deleteActivity(id);
+      commit("filterActivity", id);
+    } catch (error) {
+      console.error("Failed to delete activity:", error);
+    }
+  },
+  selectActivity(
+    { commit }: ActionContext<ActivityState, RootState>,
+    activity: Activity
+  ) {
+    commit("setSelectedActivity", activity);
   },
 };
 
 const mutations = {
-  setActivities: (state: ActivityState, activities: Activity[]) => {
+  setActivities(state: ActivityState, activities: Activity[]) {
     state.activities = activities;
-    state.loadingActivities = false;
   },
-  setActivity: (state: ActivityState, activity: Activity) => {
+  setActivity(state: ActivityState, activity: Activity) {
     state.activity = activity;
-    state.loadingActivity = false;
   },
-  setSelectedActivity: (state: ActivityState, activity: Activity) => {
+  setSelectedActivity(state: ActivityState, activity: Activity) {
     state.selectedActivity = activity;
+  },
+  filterActivity(state: ActivityState, id: number) {
+    state.activities = state.activities.filter(
+      (activity) => activity.id !== id
+    );
+  },
+  setLoadingActivities(state: ActivityState, isLoading: boolean) {
+    state.loadingActivities = isLoading;
+  },
+  setLoadingActivity(state: ActivityState, isLoading: boolean) {
+    state.loadingActivity = isLoading;
   },
 };
 

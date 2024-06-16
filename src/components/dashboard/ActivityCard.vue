@@ -14,7 +14,11 @@
       <p data-cy="activity-item-date" class="text-xs text-[#888888] md:text-sm">
         {{ formattedDate }}
       </p>
-      <button data-cy="activity-item-delete-button" class="relative z-[1]">
+      <button
+        :onClick="onDeleteClick"
+        data-cy="activity-item-delete-button"
+        class="relative z-[1]"
+      >
         <TrashIcon class="md:w-6 md:h-6" />
       </button>
     </div>
@@ -22,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import { RouterLink } from "vue-router";
 import dayjs from "dayjs";
 import TrashIcon from "../../icons/Trash.vue";
@@ -34,10 +38,10 @@ export default defineComponent({
     TrashIcon,
   },
   props: {
-    // onDeleteClick: {
-    //   type: Function,
-    //   required: true,
-    // },
+    onDeleteClick: {
+      type: Function as PropType<(payload: MouseEvent) => void>,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -52,7 +56,7 @@ export default defineComponent({
     },
   },
   computed: {
-    formattedDate() {
+    formattedDate(): string {
       return dayjs(this.date).locale("id").format("DD MMMM YYYY");
     },
   },

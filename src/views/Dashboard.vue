@@ -1,11 +1,13 @@
 <script lang="ts">
-import { defineComponent, onMounted, computed } from "vue";
+import { defineComponent, onMounted, computed, ref } from "vue";
 import { useStore } from "vuex";
 import { ActivityState } from "../store/module/activity";
 import Header from "@/components/shared/Header.vue";
 import LoadingState from "@/components/dashboard/LoadingState.vue";
 import EmptyState from "@/components/dashboard/EmptyState.vue";
 import ActivityCard from "@/components/dashboard/ActivityCard.vue";
+import { Activity, Todo } from "@/types";
+import ModalDelete from "@/components/ModalDelete.vue";
 import PlusIcon from "../icons/Plus.vue";
 
 export default defineComponent({
@@ -16,21 +18,24 @@ export default defineComponent({
     EmptyState,
     ActivityCard,
     PlusIcon,
+    ModalDelete,
   },
   setup() {
     const store = useStore<ActivityState>();
+    const openModal = ref(false);
     const activities = computed(() => store.getters.activities);
     const isLoading = computed(() => store.getters.loadingActivities);
 
-    const getActivities = async () => {
-      store.dispatch("fetchActivities");
+    const onDeleteClick = (data: Activity | Todo) => {
+      store.dispatch("selectActivity", data);
+      openModal.value = true;
     };
 
     onMounted(() => {
-      getActivities();
+      store.dispatch("fetchActivities");
     });
 
-    return { activities, isLoading };
+    return { activities, isLoading, openModal, onDeleteClick };
   },
 });
 </script>
@@ -67,7 +72,10 @@ export default defineComponent({
         :id="activity.id"
         :title="activity.title"
         :date="new Date(activity.created_at)"
+        :onDeleteClick="() => onDeleteClick(activity)"
       />
     </div>
   </main>
+
+  <ModalDelete :isOpen="openModal" :onClose="() => (openModal = false)" />
 </template>

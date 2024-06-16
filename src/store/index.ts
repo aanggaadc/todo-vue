@@ -1,7 +1,11 @@
 import { createStore } from "vuex";
-import activity from "./module/activity";
+import activity, { ActivityState } from "./module/activity";
 
-export default createStore({
+export interface RootState {
+  activity: ActivityState;
+}
+
+export default createStore<RootState>({
   modules: {
     activity,
   },

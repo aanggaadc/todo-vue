@@ -1,43 +1,24 @@
 <template>
-  <div>
-    <div
-      :class="[
-        'fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity z-[61]',
-        isOpen
-          ? 'opacity-100 ease-out duration-300'
-          : 'opacity-0 ease-in duration-200',
-        showBackdrop ? 'visible' : 'invisible',
-      ]"
-    ></div>
-
-    <div
-      @click="onClose"
-      :class="[
-        'fixed inset-0 w-screen overflow-y-auto z-[62]',
-        showBackdrop ? 'visible' : 'invisible',
-      ]"
-    >
+  <Teleport to="#modal">
+    <Transition name="modal">
       <div
-        class="flex min-h-full items-center justify-center p-4 text-center sm:p-0"
+        v-if="isOpen"
+        class="fixed z-[999] w-screen h-screen bg-[rgba(0,0,0,0.5)] flex items-center justify-center left-0 top-0"
       >
         <div
-          @click.stop
-          :class="[
-            'relative w-fit transform rounded-lg bg-white text-left shadow-xl transition-all sm:my-8',
-            isOpen
-              ? 'ease-out duration-300 opacity-100 translate-y-0 sm:scale-100'
-              : 'ease-in duration-200 opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
-          ]"
+          ref="modal"
+          class="relative shadow-[0_10px_5px_2px_rgba(0,0,0,0.1)] w-fit"
         >
-          <slot></slot>
+          <slot />
         </div>
       </div>
-    </div>
-  </div>
+    </Transition>
+  </Teleport>
 </template>
 
-<script>
-import { ref, watch, onMounted, onBeforeUnmount, defineComponent } from "vue";
+<script lang="ts">
+import { defineComponent, ref, PropType } from "vue";
+import { onClickOutside } from "@vueuse/core";
 
 export default defineComponent({
   name: "ModalComponent",
@@ -47,49 +28,37 @@ export default defineComponent({
       required: true,
     },
     onClose: {
-      type: Function,
+      type: Function as PropType<(payload: MouseEvent) => void>,
       required: true,
     },
   },
   setup(props) {
-    const showBackdrop = ref(false);
+    const modal = ref<HTMLElement | null>(null);
 
-    const toggleBodyOverflow = (shouldHide) => {
-      if (shouldHide) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.removeAttribute("style");
+    const handleClickOutside = (event: MouseEvent) => {
+      if (props.isOpen) {
+        props.onClose(event);
       }
     };
 
-    watch(
-      () => props.isOpen,
-      (newVal) => {
-        if (newVal) {
-          toggleBodyOverflow(true);
-          showBackdrop.value = true;
-        } else {
-          toggleBodyOverflow(false);
-          setTimeout(() => {
-            showBackdrop.value = false;
-          }, 300);
-        }
-      }
-    );
-
-    onMounted(() => {
-      if (props.isOpen) {
-        toggleBodyOverflow(true);
-      }
-    });
-
-    onBeforeUnmount(() => {
-      toggleBodyOverflow(false);
-    });
+    onClickOutside(modal, handleClickOutside);
 
     return {
-      showBackdrop,
+      modal,
     };
   },
 });
 </script>
+
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.25s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: scale(1.1);
+}
+</style>
