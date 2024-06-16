@@ -5,7 +5,7 @@ const fetcher = async <TData>(
   body?: unknown,
   options?: RequestInit
 ): Promise<TData> => {
-  const baseUrl = process.env.API_URL as string;
+  const baseUrl = "https://todo.api.devcode.gethired.id";
   let fullUrl = new URL(url, baseUrl).toString();
 
   const headers = {

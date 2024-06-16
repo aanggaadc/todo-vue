@@ -1,7 +1,8 @@
 <script>
-import { cn } from "../../lib/utils";
+import { defineComponent } from "vue";
+import { cn } from "../lib/utils";
 
-export default {
+export default defineComponent({
   name: "PlusIcon",
   props: {
     className: {
@@ -12,7 +13,7 @@ export default {
   methods: {
     cn,
   },
-};
+});
 </script>
 
 <template>
