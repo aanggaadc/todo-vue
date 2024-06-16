@@ -2,7 +2,7 @@
 import { defineComponent, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import { ActivityState } from "../store/module/activity";
-import Header from "@/components/Header.vue";
+import Header from "@/components/shared/Header.vue";
 import LoadingState from "@/components/dashboard/LoadingState.vue";
 import EmptyState from "@/components/dashboard/EmptyState.vue";
 import ActivityCard from "@/components/dashboard/ActivityCard.vue";

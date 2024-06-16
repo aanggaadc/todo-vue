@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
-import LeftArrowIcon from "../icons/LeftArrow.vue";
+import LeftArrowIcon from "../../icons/LeftArrow.vue";
 
 export default defineComponent({
   name: "HeaderComponent",

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import Spinner from "../Spinner.vue";
+import Spinner from "../shared/Spinner.vue";
 
 export default defineComponent({
   name: "LoadingState",

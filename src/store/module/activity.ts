@@ -7,6 +7,7 @@ export interface ActivityState {
   loadingActivities: boolean;
   activity: Activity | null;
   loadingActivity: boolean;
+  selectedActivity: Activity | null;
 }
 
 const state: ActivityState = {
@@ -14,11 +15,13 @@ const state: ActivityState = {
   activity: null,
   loadingActivities: true,
   loadingActivity: true,
+  selectedActivity: null,
 };
 
 const getters = {
   activities: (state: ActivityState) => state.activities,
   activity: (state: ActivityState) => state.activity,
+  selectedActivity: (state: ActivityState) => state.selectedActivity,
   loadingActivities: (state: ActivityState) => state.loadingActivities,
   loadingActivity: (state: ActivityState) => state.loadingActivity,
 };
@@ -46,6 +49,9 @@ const mutations = {
   setActivity: (state: ActivityState, activity: Activity) => {
     state.activity = activity;
     state.loadingActivity = false;
+  },
+  setSelectedActivity: (state: ActivityState, activity: Activity) => {
+    state.selectedActivity = activity;
   },
 };
 
