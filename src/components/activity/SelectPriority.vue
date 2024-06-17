@@ -52,6 +52,7 @@ export default defineComponent({
 <template>
   <div class="relative">
     <div
+      data-cy="modal-add-priority-dropdown"
       @click="toggleDropdown"
       class="w-full rounded-lg p-4 bg-white border-neutral-200 border-solid border cursor-pointer flex items-center justify-between"
     >
@@ -75,7 +76,6 @@ export default defineComponent({
       </div>
     </div>
     <div
-      data-cy="modal-add-priority-dropdown"
       v-if="isOpen"
       class="absolute w-full bg-white border-neutral-200 border-solid border mt-1 z-10 rounded-lg shadow-lg"
     >
