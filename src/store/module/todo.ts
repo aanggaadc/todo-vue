@@ -43,7 +43,10 @@ const actions = {
       commit("setLoadingTodos", false);
     }
   },
-  selectTodo({ commit }: ActionContext<TodoState, RootState>, todo: Todo) {
+  selectTodo(
+    { commit }: ActionContext<TodoState, RootState>,
+    todo: Todo | null
+  ) {
     commit("setSelectedTodo", todo);
   },
   async createTodo(
@@ -90,7 +93,7 @@ const mutations = {
   setTodos(state: TodoState, todos: Todo[]) {
     state.todos = todos;
   },
-  setSelectedTodo(state: TodoState, todo: Todo) {
+  setSelectedTodo(state: TodoState, todo: Todo | null) {
     state.todo = todo;
   },
   addTodo(state: TodoState, todo: Todo) {

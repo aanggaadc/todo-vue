@@ -62,8 +62,8 @@ export default defineComponent({
     };
 
     const handleCreateTodo = () => {
-      openTodoModal.value = true;
       store.dispatch("selectTodo", null);
+      openTodoModal.value = true;
     };
 
     const selectTodo = (todo: Todo) => {
@@ -72,6 +72,7 @@ export default defineComponent({
 
     const handleClickEditTodo = (todo: Todo) => {
       selectTodo(todo);
+      openTodoModal.value = true;
     };
 
     const handleClickedDeleteTodo = (todo: Todo) => {

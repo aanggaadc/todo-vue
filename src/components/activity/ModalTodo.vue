@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ref, defineComponent, PropType, computed } from "vue";
+import { ref, defineComponent, PropType, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import Modal from "../shared/Modal.vue";
@@ -44,7 +44,9 @@ export default defineComponent({
       if (todo.value) {
         await store.dispatch("updateTodo", {
           id: todo.value.id,
-          ...form.value,
+          title: form.value.title,
+          priority: form.value.priority.value,
+          is_active: true,
         });
       } else {
         await store.dispatch("createTodo", {
@@ -57,6 +59,26 @@ export default defineComponent({
       props.onClose();
       form.value = { ...initialForm };
     };
+
+    watch(
+      () => todo.value,
+      (newValue) => {
+        if (newValue) {
+          form.value = {
+            title: newValue.title,
+            priority: {
+              value: newValue.priority,
+              label:
+                priorityOptions.find(
+                  (option) => option.value === newValue.priority
+                )?.label || "",
+            },
+          };
+        } else {
+          form.value = { ...initialForm };
+        }
+      }
+    );
 
     return {
       form,
