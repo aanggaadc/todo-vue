@@ -15,6 +15,7 @@ import Header from "@/components/shared/Header.vue";
 import TodoCard from "@/components/activity/TodoCard.vue";
 import EmptyTodo from "@/components/activity/EmptyTodo.vue";
 import ModalDelete from "@/components/ModalDelete.vue";
+import ModalTodo from "@/components/activity/ModalTodo.vue";
 import PencilIcon from "../icons/Pencil.vue";
 import PlusIcon from "../icons/Plus.vue";
 import Spinner from "@/components/shared/Spinner.vue";
@@ -29,6 +30,7 @@ export default defineComponent({
     PlusIcon,
     Spinner,
     ModalDelete,
+    ModalTodo,
   },
   setup() {
     const route = useRoute();
@@ -37,6 +39,7 @@ export default defineComponent({
     const inputRef = ref<HTMLInputElement | null>(null);
     const editMode = ref(false);
     const openDeleteModal = ref(false);
+    const openTodoModal = ref(false);
     const activity = computed(() => store.getters.activity);
     const todos = computed(() => store.getters.todos);
     const isLoadingActivity = computed(() => store.getters.loadingActivity);
@@ -56,6 +59,11 @@ export default defineComponent({
         });
         editMode.value = false;
       }
+    };
+
+    const handleCreateTodo = () => {
+      openTodoModal.value = true;
+      store.dispatch("selectTodo", null);
     };
 
     const selectTodo = (todo: Todo) => {
@@ -96,8 +104,10 @@ export default defineComponent({
       handleUpdateActivity,
       handleClickEditTodo,
       handleClickedDeleteTodo,
+      handleCreateTodo,
       inputRef,
       openDeleteModal,
+      openTodoModal,
     };
   },
 });
@@ -151,6 +161,7 @@ export default defineComponent({
 
       <div className="flex justify-end gap-2">
         <button
+          :onClick="handleCreateTodo"
           data-cy="todo-add-button"
           className="w-[100px] md:w-[120px] font-poppins text-xs font-semibold text-white rounded-3xl p-3 bg-primary flex items-center justify-center gap-1 md:text-sm md:px-6"
         >
@@ -180,4 +191,6 @@ export default defineComponent({
     :isOpen="openDeleteModal"
     :onClose="() => (openDeleteModal = false)"
   />
+
+  <ModalTodo :isOpen="openTodoModal" :onClose="() => (openTodoModal = false)" />
 </template>
