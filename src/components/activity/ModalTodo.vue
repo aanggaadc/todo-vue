@@ -3,7 +3,7 @@ import { ref, defineComponent, PropType, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import Modal from "../shared/Modal.vue";
-import CustomSelect from "./CustomSelect.vue";
+import SelectPriority from "./SelectPriority.vue";
 import CloseIcon from "../../icons/Close.vue";
 import { colorPriorityMap, priorityOptions } from "@/fixtures";
 import { TodoState } from "@/store/module/todo";
@@ -21,7 +21,7 @@ export default defineComponent({
   components: {
     Modal,
     CloseIcon,
-    CustomSelect,
+    SelectPriority,
   },
   props: {
     isOpen: {
@@ -137,7 +137,7 @@ export default defineComponent({
         >
           PRIORITY
         </label>
-        <CustomSelect
+        <SelectPriority
           v-model="form.priority"
           :options="priorityOptions"
           :colorPriorityMap="colorPriorityMap"

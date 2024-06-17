@@ -16,6 +16,7 @@ import TodoCard from "@/components/activity/TodoCard.vue";
 import EmptyTodo from "@/components/activity/EmptyTodo.vue";
 import ModalDelete from "@/components/ModalDelete.vue";
 import ModalTodo from "@/components/activity/ModalTodo.vue";
+import Filter from "@/components/activity/Filter.vue";
 import PencilIcon from "../icons/Pencil.vue";
 import PlusIcon from "../icons/Plus.vue";
 import Spinner from "@/components/shared/Spinner.vue";
@@ -31,6 +32,7 @@ export default defineComponent({
     Spinner,
     ModalDelete,
     ModalTodo,
+    Filter,
   },
   setup() {
     const route = useRoute();
@@ -161,6 +163,7 @@ export default defineComponent({
       </div>
 
       <div className="flex justify-end gap-2">
+        <Filter />
         <button
           :onClick="handleCreateTodo"
           data-cy="todo-add-button"
