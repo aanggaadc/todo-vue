@@ -75,11 +75,12 @@ export default defineComponent({
       </div>
     </div>
     <div
+      data-cy="modal-add-priority-dropdown"
       v-if="isOpen"
       class="absolute w-full bg-white border-neutral-200 border-solid border mt-1 z-10 rounded-lg shadow-lg"
     >
       <div
-        data-cy="modal-add-priority-dropdown"
+        data-cy="modal-add-priority-item"
         v-for="option in options"
         :key="option.value"
         @click="selectOption(option)"
