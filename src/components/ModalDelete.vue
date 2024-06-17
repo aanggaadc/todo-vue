@@ -1,7 +1,9 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
+import { useToast } from "vue-toastification";
 import { useStore } from "vuex";
 import Modal from "./shared/Modal.vue";
+import ModalInformation from "./ModalInformation.vue";
 import WarningIcon from "../icons/Warning.vue";
 
 export default defineComponent({
@@ -26,9 +28,20 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+    const toast = useToast();
     const activity = computed(() => store.getters.selectedActivity);
     const todo = computed(() => store.getters.todo);
     const currentData = props.type === "activity" ? activity : todo;
+
+    const content = {
+      component: ModalInformation,
+      props: {
+        content:
+          props.type === "activity"
+            ? "Activity berhasil dihapus"
+            : "List item berhasil dihapus",
+      },
+    };
 
     const handleDelete = async (id: number) => {
       try {
@@ -36,6 +49,10 @@ export default defineComponent({
           ? await store.dispatch("deleteActivity", id)
           : await store.dispatch("deleteTodo", id);
         props.onClose();
+        toast(content, {
+          icon: false,
+          toastClassName: "!bg-white !text-black",
+        });
       } catch (error) {
         console.error("Failed to delete activity:", error);
       }
