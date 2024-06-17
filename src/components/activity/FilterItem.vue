@@ -1,19 +1,3 @@
-<template>
-  <button
-    data-cy="sort-selection"
-    class="relative w-full px-4 py-3 text-sm text-gray-700 flex items-center gap-3"
-    @click="handleClick"
-  >
-    <div data-cy="sort-selection-icon">
-      <component :is="icon" />
-    </div>
-    <p data-cy="sort-selection-title">{{ label }}</p>
-    <div v-if="activeFilter === filterType" class="absolute right-3">
-      <ChecklistIcon />
-    </div>
-  </button>
-</template>
-
 <script lang="ts">
 import { defineComponent, watch } from "vue";
 import { useStore } from "vuex";
@@ -81,3 +65,19 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <button
+    data-cy="sort-selection"
+    class="relative w-full px-4 py-3 text-sm text-gray-700 flex items-center gap-3"
+    @click="handleClick"
+  >
+    <div data-cy="sort-selection-icon">
+      <component :is="icon" />
+    </div>
+    <p data-cy="sort-selection-title">{{ label }}</p>
+    <div v-if="activeFilter === filterType" class="absolute right-3">
+      <ChecklistIcon />
+    </div>
+  </button>
+</template>

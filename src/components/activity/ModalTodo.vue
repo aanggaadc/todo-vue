@@ -146,6 +146,7 @@ export default defineComponent({
 
       <div class="py-4 px-6 flex justify-end">
         <button
+          :disabled="!form.title"
           data-cy="modal-add-save-button"
           @click="handleSaveModal"
           class="rounded-3xl px-10 py-3 bg-primary disabled:bg-[#67ccff] text-white font-semibold"

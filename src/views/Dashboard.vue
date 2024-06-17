@@ -48,7 +48,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <Header title="TODO LIST APP" />
+  <Header title="TO DO LIST APP" />
 
   <main
     class="w-full overflow-hidden mx-auto max-w-screen-lg min-h-[calc(100vh_-_64px)] px-5 py-6 lg:px-0 lg:py-8 font-poppins flex flex-col lg:min-h-[calc(100vh_-_105px)]"

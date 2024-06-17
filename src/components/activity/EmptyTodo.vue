@@ -7,7 +7,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div data-cy="activity-empty-state" class="mt-[90px]">
+  <div data-cy="todo-empty-state" class="mt-[90px]">
     <img
       src="/images/todo-empty-state.png"
       alt="empty"
