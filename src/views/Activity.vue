@@ -10,7 +10,11 @@ import {
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { ActivityState } from "@/store/module/activity";
+import { Todo } from "@/types";
 import Header from "@/components/shared/Header.vue";
+import TodoCard from "@/components/activity/TodoCard.vue";
+import EmptyTodo from "@/components/activity/EmptyTodo.vue";
+import ModalDelete from "@/components/ModalDelete.vue";
 import PencilIcon from "../icons/Pencil.vue";
 import PlusIcon from "../icons/Plus.vue";
 import Spinner from "@/components/shared/Spinner.vue";
@@ -19,9 +23,12 @@ export default defineComponent({
   name: "ActivityView",
   components: {
     Header,
+    EmptyTodo,
+    TodoCard,
     PencilIcon,
     PlusIcon,
     Spinner,
+    ModalDelete,
   },
   setup() {
     const route = useRoute();
@@ -29,8 +36,11 @@ export default defineComponent({
     const param = route.params.id;
     const inputRef = ref<HTMLInputElement | null>(null);
     const editMode = ref(false);
+    const openDeleteModal = ref(false);
     const activity = computed(() => store.getters.activity);
-    const isLoading = computed(() => store.getters.loadingActivity);
+    const todos = computed(() => store.getters.todos);
+    const isLoadingActivity = computed(() => store.getters.loadingActivity);
+    const isLoadingTodos = computed(() => store.getters.loadingTodos);
 
     const handleUpdateActivity = async () => {
       if (
@@ -48,8 +58,22 @@ export default defineComponent({
       }
     };
 
+    const selectTodo = (todo: Todo) => {
+      store.dispatch("selectTodo", todo);
+    };
+
+    const handleClickEditTodo = (todo: Todo) => {
+      selectTodo(todo);
+    };
+
+    const handleClickedDeleteTodo = (todo: Todo) => {
+      selectTodo(todo);
+      openDeleteModal.value = true;
+    };
+
     onMounted(() => {
       store.dispatch("getActivity", param);
+      store.dispatch("getTodos", param);
     });
 
     watch(
@@ -63,17 +87,28 @@ export default defineComponent({
       }
     );
 
-    return { activity, isLoading, editMode, handleUpdateActivity, inputRef };
+    return {
+      activity,
+      todos,
+      isLoadingActivity,
+      isLoadingTodos,
+      editMode,
+      handleUpdateActivity,
+      handleClickEditTodo,
+      handleClickedDeleteTodo,
+      inputRef,
+      openDeleteModal,
+    };
   },
 });
 </script>
 
 <template>
-  <Header :title="isLoading ? 'loading...' : activity.title" backNav />
+  <Header :title="isLoadingActivity ? 'loading...' : activity.title" backNav />
 
   <main className="p-8 font-poppins max-w-screen-lg mx-auto lg:py-8 lg:px-0">
     <div
-      v-if="isLoading"
+      v-if="isLoadingActivity || isLoadingTodos"
       className="min-h-[calc(100vh_-_64px)] lg:min-h-[calc(100vh_-_105px)] flex items-center justify-center"
     >
       <Spinner />
@@ -124,5 +159,25 @@ export default defineComponent({
         </button>
       </div>
     </div>
+
+    <div v-if="!todos.length" class="mt-[90px]">
+      <EmptyTodo />
+    </div>
+
+    <div v-else class="flex flex-col gap-2 mt-7">
+      <TodoCard
+        v-for="todo in todos"
+        :key="todo.id"
+        :todo="todo"
+        @clickDelete="handleClickedDeleteTodo(todo)"
+        @clickEdit="handleClickEditTodo(todo)"
+      />
+    </div>
   </main>
+
+  <ModalDelete
+    type="todo"
+    :isOpen="openDeleteModal"
+    :onClose="() => (openDeleteModal = false)"
+  />
 </template>

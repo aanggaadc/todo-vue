@@ -32,7 +32,7 @@ export const updateTodo = async (params: {
 }): Promise<Todo> => {
   const { id, ...payload } = params;
   const response = await fetcher<Todo>(`/todo-items/${id}`, payload, {
-    method: "PUT",
+    method: "PATCH",
   });
 
   return response;

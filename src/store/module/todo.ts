@@ -4,6 +4,8 @@ import { RootState } from "..";
 import {
   getTodos as getTodosApi,
   createTodo as createTodoApi,
+  updateTodo as updateTodoApi,
+  deleteTodo as deleteTodoApi,
 } from "@/api/todo";
 
 export interface TodoState {
@@ -55,28 +57,33 @@ const actions = {
       console.error("Failed to create activity:", error);
     }
   },
-  //   async updateActivity(
-  //     { commit }: ActionContext<TodoState, RootState>,
-  //     params: { id: number; title: string }
-  //   ) {
-  //     try {
-  //       const updatedActivity = await updateActivityApi(params);
-  //       commit("setActivity", updatedActivity);
-  //     } catch (error) {
-  //       console.error("Failed to update activity:", error);
-  //     }
-  //   },
-  //   async deleteActivity(
-  //     { commit }: ActionContext<TodoState, RootState>,
-  //     id: number
-  //   ) {
-  //     try {
-  //       await deleteActivityApi(id);
-  //       commit("deleteActivity", id);
-  //     } catch (error) {
-  //       console.error("Failed to delete activity:", error);
-  //     }
-  //   },
+  async updateTodo(
+    { commit }: ActionContext<TodoState, RootState>,
+    params: {
+      id: number;
+      is_active: boolean;
+      priority?: string | undefined;
+      title?: string | undefined;
+    }
+  ) {
+    try {
+      const updatedTodo = await updateTodoApi(params);
+      commit("updateTodos", updatedTodo);
+    } catch (error) {
+      console.error("Failed to update activity:", error);
+    }
+  },
+  async deleteTodo(
+    { commit }: ActionContext<TodoState, RootState>,
+    id: number
+  ) {
+    try {
+      await deleteTodoApi(id);
+      commit("deleteTodo", id);
+    } catch (error) {
+      console.error("Failed to delete activity:", error);
+    }
+  },
 };
 
 const mutations = {
@@ -89,11 +96,14 @@ const mutations = {
   addTodo(state: TodoState, todo: Todo) {
     state.todos = [todo, ...state.todos];
   },
-  //   deleteActivity(state: TodoState, id: number) {
-  //     state.activities = state.activities.filter(
-  //       (activity) => activity.id !== id
-  //     );
-  //   },
+  updateTodos(state: TodoState, todo: Todo) {
+    state.todos = state.todos.map((t) =>
+      t.id === todo.id ? { ...t, ...todo } : t
+    );
+  },
+  deleteTodo(state: TodoState, id: number) {
+    state.todos = state.todos.filter((todo) => todo.id !== id);
+  },
   setLoadingTodos(state: TodoState, isLoading: boolean) {
     state.loadingTodos = isLoading;
   },

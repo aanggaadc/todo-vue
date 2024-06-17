@@ -1,13 +1,16 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
 import { useStore } from "vuex";
-import { ActivityState } from "@/store/module/activity";
 import Modal from "./shared/Modal.vue";
 import WarningIcon from "../icons/Warning.vue";
 
 export default defineComponent({
   name: "ModalDelete",
   props: {
+    type: {
+      type: String as PropType<"activity" | "todo">,
+      default: "activity",
+    },
     isOpen: {
       type: Boolean,
       required: true,
@@ -22,12 +25,16 @@ export default defineComponent({
     WarningIcon,
   },
   setup(props) {
-    const store = useStore<ActivityState>();
+    const store = useStore();
     const activity = computed(() => store.getters.selectedActivity);
+    const todo = computed(() => store.getters.todo);
+    const currentData = props.type === "activity" ? activity : todo;
 
-    const deleteActivity = async (id: number) => {
+    const handleDelete = async (id: number) => {
       try {
-        await store.dispatch("deleteActivity", id);
+        props.type === "activity"
+          ? await store.dispatch("deleteActivity", id)
+          : await store.dispatch("deleteTodo", id);
         props.onClose();
       } catch (error) {
         console.error("Failed to delete activity:", error);
@@ -35,8 +42,8 @@ export default defineComponent({
     };
 
     return {
-      activity,
-      deleteActivity,
+      currentData,
+      handleDelete,
     };
   },
 });
@@ -53,8 +60,9 @@ export default defineComponent({
         <h4 data-cy="modal-delete-title"></h4>
 
         <p className="text-sm text-center mb-10">
-          Apakah anda yakin menghapus activity
-          <span className="font-bold">“{{ activity.title }}”?</span>
+          Apakah anda yakin menghapus
+          {{ type === "activity" ? "activity" : "list item" }}
+          <span className="font-bold">“{{ currentData.title }}”?</span>
         </p>
 
         <div className="flex items-center justify-center gap-2">
@@ -66,7 +74,7 @@ export default defineComponent({
             Batal
           </button>
           <button
-            :onClick="() => deleteActivity(activity.id)"
+            :onClick="() => handleDelete(currentData.id)"
             data-cy="modal-delete-confirm-button"
             className="font-poppins text-sm font-semibold text-white rounded-3xl px-8 py-3 bg-[#ED4C5C]"
           >
