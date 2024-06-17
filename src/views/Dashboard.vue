@@ -38,8 +38,12 @@ export default defineComponent({
       openModal.value = true;
     };
 
-    onMounted(() => {
-      store.dispatch("getActivities");
+    onMounted(async () => {
+      try {
+        await store.dispatch("getActivities");
+      } catch (error) {
+        console.error("Failed to load activities:", error);
+      }
     });
 
     return { activities, isLoading, openModal, createActivity, onDeleteClick };
