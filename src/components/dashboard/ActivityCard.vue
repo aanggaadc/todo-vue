@@ -1,9 +1,10 @@
 <template>
   <div
+    data-cy="activity-item"
     class="flex-none font-poppins w-[150px] h-[150px] px-[17px] py-[13px] shadow-[0px_6px_10px_0px_#0000001A] rounded-lg flex flex-col justify-between md:w-[235px] md:h-[234px] md:px-[26px] md:py-[22px]"
   >
     <RouterLink class="grow" :to="`/activity/${id}`">
-      <div data-cy="activity-item" class="h-full">
+      <div class="h-full">
         <h3 data-cy="activity-item-title" class="font-bold text-sm md:text-lg">
           {{ title }}
         </h3>
